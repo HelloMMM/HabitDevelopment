@@ -7,31 +7,110 @@
 //
 
 import UIKit
+import IQKeyboardManagerSwift
+import UserNotifications
+
+var isRemoveAD: Bool = false
+var isNotification: Bool = true
+var appStyle = 0
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
-
-
+    
+    var window: UIWindow?
+    let notificationHandler = NotificationHandler()
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        if let style = UserDefaults.standard.object(forKey: "appStyle") {
+            
+            appStyle = style as! Int
+        }
+        
+        UIApplication.shared.applicationIconBadgeNumber = 0
+        
+        IQKeyboardManager.shared.enable = true
+        
+        if let removeAD = UserDefaults.standard.object(forKey: "isRemoveAD") {
+            
+            isRemoveAD = removeAD as! Bool
+        }
+        
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert,.sound,.badge], completionHandler: { (granted, error) in
+            if granted {
+                print("允許")
+            } else {
+                print("不允許")
+                isNotification = false
+            }
+        })
+        
+        UNUserNotificationCenter.current().delegate = notificationHandler
+        
+        UNUserNotificationCenter.current().getPendingNotificationRequests { (requests) in
+
+            for request in requests {
+                print(request)
+            }
+        }
+        
+//        registerNotificationCategory()
         return true
     }
-
-    // MARK: UISceneSession Lifecycle
-
-    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        // Called when a new scene session is being created.
-        // Use this method to select a configuration to create the new scene with.
-        return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+    
+    func applicationWillEnterForeground(_ application: UIApplication) {
+        UIApplication.shared.applicationIconBadgeNumber = 0
     }
-
-    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
-        // Called when the user discards a scene session.
-        // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
-        // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
+    
+    private func registerNotificationCategory() {
+        let newsCategory: UNNotificationCategory = {
+            //创建输入文本的action
+            let inputAction = UNTextInputNotificationAction(
+                identifier: "A",
+                title: "A",
+                options: [.foreground],
+                textInputButtonTitle: "AA",
+                textInputPlaceholder: "AAA")
+             
+            //创建普通的按钮action
+            let likeAction = UNNotificationAction(
+                identifier: "B",
+                title: "B",
+                options: [.foreground])
+             
+            //创建普通的按钮action
+            let cancelAction = UNNotificationAction(
+                identifier: "C",
+                title: "C",
+                options: [.destructive])
+             
+            //创建category
+            return UNNotificationCategory(identifier: "D",
+                                          actions: [inputAction, likeAction, cancelAction],
+                                          intentIdentifiers: [], options: [.customDismissAction])
+        }()
+         
+        //把category添加到通知中心
+        UNUserNotificationCenter.current().setNotificationCategories([newsCategory])
     }
-
-
 }
 
+class NotificationHandler: NSObject, UNUserNotificationCenterDelegate {
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        
+        completionHandler([.alert, .sound])
+
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        
+        let categoryIdentifier = response.actionIdentifier
+        
+        print(categoryIdentifier)
+        
+        completionHandler()
+        
+        UIApplication.shared.applicationIconBadgeNumber = 0
+    }
+}
