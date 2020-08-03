@@ -54,11 +54,6 @@ class TestVC: SpotlightViewController {
             })
             
             spotlightView.move(Spotlight.Oval(center: CGPoint(x: screenSize.width/2, y: screenSize.height-tabbarVC.tabBar.frame.height), diameter: 90), moveType: .disappear)
-            
-            
-            
-            
-            
         case 2:
             dismiss(animated: true) {
                 self.testVCDelegate?.enterMain()

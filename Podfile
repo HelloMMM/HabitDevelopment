@@ -10,8 +10,8 @@ target 'HabitDevelopment' do
 pod 'Hero'
 pod 'IQKeyboardManagerSwift'
 pod 'Google-Mobile-Ads-SDK'
-pod "ESTabBarController-swift"
-pod 'NVActivityIndicatorView'
+pod 'ESTabBarController-swift'
 pod 'pop', '~> 1.0'
+pod 'NVActivityIndicatorView'
 
 end

@@ -27,7 +27,18 @@ class ViewController: UIViewController {
         interstitial = createAndLoadInterstitial()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+    
+        UIView.animate(withDuration: 0.3) {
+            self.tableView.alpha = 0
+        }
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
+        
+        UIView.animate(withDuration: 0.3) {
+            self.tableView.alpha = 1
+        }
         
         if UserDefaults.standard.object(forKey: "firstStart") == nil {
             
