@@ -50,7 +50,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UNUserNotificationCenter.current().getPendingNotificationRequests { (requests) in
 
             for request in requests {
-                print(request)
+                
+//                let nowTime = Date().timeIntervalSince1970
+//                let localTrigger = request.content
+//                let localTimeInterval = localTrigger.timeInterval
+//                let limitDescriptionTime = (-1 * Int(round(nowTime - localTimeInterval)))
+//                
+//                let duration: TimeInterval = TimeInterval(limitDescriptionTime)
+//                
+//                let formatter = DateComponentsFormatter()
+//                formatter.unitsStyle = .positional
+//                formatter.allowedUnits = [ .minute, .second ]
+//                formatter.zeroFormattingBehavior = [ .pad ]
+//
+//                let formattedDuration = formatter.string(from: duration) ?? ""
+//                
+//                print("formattedDuration: \(formattedDuration)")
             }
         }
         

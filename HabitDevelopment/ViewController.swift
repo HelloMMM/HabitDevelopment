@@ -29,16 +29,16 @@ class ViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
     
-        UIView.animate(withDuration: 0.3) {
-            self.tableView.alpha = 0
-        }
+//        UIView.animate(withDuration: 0.3) {
+//            self.tableView.alpha = 0
+//        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
         
-        UIView.animate(withDuration: 0.3) {
-            self.tableView.alpha = 1
-        }
+//        UIView.animate(withDuration: 0.3) {
+//            self.tableView.alpha = 1
+//        }
         
         if UserDefaults.standard.object(forKey: "firstStart") == nil {
             
@@ -174,6 +174,13 @@ extension ViewController: DetailedVCDelegate {
     }
     
     func setData() {
+        
+        dataAry.sort { d1, d2 in
+            let day1 = Int(d1["day"] as! String) ?? 0
+            let day2 = Int(d2["day"] as! String) ?? 0
+            return day1 < day2
+        }
+        
         tableView.reloadData()
         UserDefaults.standard.set(dataAry, forKey: "dataAry")
         
@@ -234,7 +241,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         if gapDay < 0 {
             cell.dayLab.text = "0 天"
         } else {
-            cell.dayLab.text = "\(gapDay) 天"
+            cell.dayLab.text = "\(gapDay+1) 天"
         }
         
         
@@ -264,33 +271,11 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     
-        let isDay = dataAry[indexPath.row]["isDay"] as! Bool
+        let contentText = dataAry[indexPath.row]["aims"] as? String
         
-        if isDay {
-            
-            let detailedVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "DetailedVC") as! DetailedVC
-            detailedVC.delegate = self
-            detailedVC.hero_id = "hero_id_\(indexPath.row)"
-            detailedVC.data = dataAry[indexPath.row]
-            detailedVC.row = indexPath.row
-            detailedVC.isUpdata = true
-            
-            DispatchQueue.main.async {
-                self.present(detailedVC, animated: true, completion: nil)
-            }
-        } else {
-            
-            let detailedVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "DesignatedVC") as! DesignatedVC
-            detailedVC.delegate = self
-            detailedVC.hero_id = "hero_id_\(indexPath.row)"
-            detailedVC.data = dataAry[indexPath.row]
-            detailedVC.row = indexPath.row
-            detailedVC.isUpdata = true
-            
-            DispatchQueue.main.async {
-                self.present(detailedVC, animated: true, completion: nil)
-            }
-        }
+        let contentTextVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "idContentTextVC") as! ContentTextVC
+        contentTextVC.contentText = contentText ?? ""
+        present(contentTextVC, animated: false, completion: nil)
     }
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
@@ -336,6 +321,37 @@ extension ViewController: ViewControllerCellDelegate {
         } else {
             
             UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [identifier])
+        }
+    }
+    
+    func editClick(row: Int) {
+        
+        let isDay = dataAry[row]["isDay"] as! Bool
+        
+        if isDay {
+            
+            let detailedVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "DetailedVC") as! DetailedVC
+            detailedVC.delegate = self
+            detailedVC.hero_id = "hero_id_\(row)"
+            detailedVC.data = dataAry[row]
+            detailedVC.row = row
+            detailedVC.isUpdata = true
+            
+            DispatchQueue.main.async {
+                self.present(detailedVC, animated: true, completion: nil)
+            }
+        } else {
+            
+            let detailedVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "DesignatedVC") as! DesignatedVC
+            detailedVC.delegate = self
+            detailedVC.hero_id = "hero_id_\(row)"
+            detailedVC.data = dataAry[row]
+            detailedVC.row = row
+            detailedVC.isUpdata = true
+            
+            DispatchQueue.main.async {
+                self.present(detailedVC, animated: true, completion: nil)
+            }
         }
     }
 }

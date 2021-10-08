@@ -132,18 +132,18 @@ class DetailedVC: UIViewController {
 
 extension DetailedVC: UITextFieldDelegate {
     
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        
-        let newText = (textField.text! as NSString).replacingCharacters(in: range, with: string)
-        let numberOfChars = newText.count
-        
-        if numberOfChars > 10 {
-            showToast("最多10個字")
-            textField.shake()
-        }
-        
-        return numberOfChars <= 10
-    }
+//    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+//        
+//        let newText = (textField.text! as NSString).replacingCharacters(in: range, with: string)
+//        let numberOfChars = newText.count
+//        
+//        if numberOfChars > 10 {
+//            showToast("最多10個字")
+//            textField.shake()
+//        }
+//        
+//        return numberOfChars <= 10
+//    }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         

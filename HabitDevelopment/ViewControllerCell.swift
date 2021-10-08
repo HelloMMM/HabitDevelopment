@@ -10,6 +10,7 @@ import UIKit
 
 protocol ViewControllerCellDelegate {
     func switchChange(isOn: Bool, row: Int)
+    func editClick(row: Int)
 }
 
 class ViewControllerCell: UITableViewCell {
@@ -21,6 +22,7 @@ class ViewControllerCell: UITableViewCell {
     @IBOutlet weak var time: UILabel!
     @IBOutlet weak var dayTitle: UILabel!
     @IBOutlet weak var lastDayTitle: UILabel!
+    
     var delegate: ViewControllerCellDelegate?
     var row = 0
     
@@ -45,15 +47,8 @@ class ViewControllerCell: UITableViewCell {
         delegate?.switchChange(isOn: sender.isOn, row: row)
     }
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
+    @IBAction func editClick(_ sender: Any) {
         
+        delegate?.editClick(row: row)
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
-
 }
